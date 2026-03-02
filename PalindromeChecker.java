@@ -3,30 +3,31 @@
  * MAIN CLASS - PalindromChecker
  * ==========================================================
  *
- * Use Case 4: Character Array Based Palindrome Check
+ * Use Case 5: Stack-Based Palindrome Checker
  *
  * Description:
- * This class converts a string into a character array
- * and uses the two-pointer technique to check if it
- * is a palindrome by comparing start and end characters.
+ * This class uses a Stack data structure to check whether
+ * a string is a palindrome. Characters are pushed onto
+ * the stack and then popped (LIFO) to naturally reverse
+ * them for comparison.
  *
  * Flow:
- * 1. Convert string to char[]
- * 2. Use two-pointer approach
- * 3. Compare start & end characters
- * 4. Display result
+ * 1. Push all characters into the stack
+ * 2. Pop characters and compare with original
+ * 3. Print result
  *
  * Key Concepts:
- * - Character Array (char[]) for index-based access
- * - Array Indexing starting from 0
- * - Two-Pointer Technique (start & end pointers)
- * - Time Complexity Awareness (no extra objects created)
+ * - Stack (LIFO - Last In First Out)
+ * - Push Operation to insert characters
+ * - Pop Operation to retrieve in reverse order
+ * - Reversal Logic using Stack
  *
  * @author Pranav Harlalka
  * @version 1.0
  */
 
 import java.util.Scanner;
+import java.util.Stack;
 
 public class PalindromChecker {
 
@@ -42,27 +43,23 @@ public class PalindromChecker {
         System.out.print("Enter a string: ");
         String input = scanner.nextLine();
 
-        // Step 1: Convert string to character array
-        char[] chars = input.toCharArray();
+        // Step 1: Push all characters into the stack
+        Stack<Character> stack = new Stack<>();
+        for (int i = 0; i < input.length(); i++) {
+            stack.push(input.charAt(i));
+        }
 
-        // Step 2: Two-pointer approach
-        int start = 0;
-        int end = chars.length - 1;
-
+        // Step 2: Pop characters and compare with original
         boolean isPalindrome = true;
-
-        // Step 3: Compare start & end characters
-        while (start < end) {
-            if (chars[start] != chars[end]) {
+        for (int i = 0; i < input.length(); i++) {
+            if (input.charAt(i) != stack.pop()) {
                 isPalindrome = false;
                 break;
             }
-            start++;
-            end--;
         }
 
-        // Step 4: Display result
-        System.out.println("Input    : " + input);
+        // Step 3: Print result
+        System.out.println("Input        : " + input);
         System.out.println("Is Palindrome: " + isPalindrome);
 
         scanner.close();
