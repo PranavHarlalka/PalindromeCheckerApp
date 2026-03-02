@@ -3,26 +3,23 @@
  * MAIN CLASS - PalindromChecker
  * ==========================================================
  *
- * Use Case 8: Linked List Based Palindrome Checker
+ * Use Case 9: Recursive Palindrome Checker
  *
  * Description:
  * This class checks whether a string is a palindrome
- * using a Singly Linked List. It uses the Fast & Slow
- * pointer technique to find the middle, reverses the
- * second half in-place, then compares both halves.
+ * using recursion. The method calls itself with a
+ * smaller subproblem each time until the base condition
+ * is reached.
  *
  * Flow:
- * 1. Convert string to linked list
- * 2. Find middle using fast & slow pointers
- * 3. Reverse second half in-place
- * 4. Compare both halves
- * 5. Display result
+ * 1. Recursive call compares start & end characters
+ * 2. Base condition exits recursion
+ * 3. Display result
  *
  * Key Concepts:
- * - Singly Linked List with Node references
- * - Node Traversal using next references
- * - Fast & Slow Pointer Technique to find middle
- * - In-Place Reversal of second half
+ * - Recursion (method calls itself)
+ * - Base Condition (prevents infinite recursion)
+ * - Call Stack (manages recursive method calls)
  *
  * @author Pranav Harlalka
  * @version 1.0
@@ -32,15 +29,30 @@ import java.util.Scanner;
 
 public class PalindromChecker {
 
-    // Node class for Singly Linked List
-    static class Node {
-        char data;
-        Node next;
+    /**
+     * Recursive method to check palindrome.
+     * Compares characters at start and end positions,
+     * moving inward with each recursive call.
+     *
+     * @param str   the input string
+     * @param start starting index
+     * @param end   ending index
+     * @return true if palindrome, false otherwise
+     */
+    static boolean isPalindrome(String str, int start, int end) {
 
-        Node(char data) {
-            this.data = data;
-            this.next = null;
+        // Base condition 1: single character or empty - always palindrome
+        if (start >= end) {
+            return true;
         }
+
+        // If characters don't match - not a palindrome
+        if (str.charAt(start) != str.charAt(end)) {
+            return false;
+        }
+
+        // Recursive call - move inward
+        return isPalindrome(str, start + 1, end - 1);
     }
 
     /**
@@ -55,60 +67,12 @@ public class PalindromChecker {
         System.out.print("Enter a string: ");
         String input = scanner.nextLine();
 
-        // Step 1: Convert string to linked list
-        Node head = null;
-        Node tail = null;
+        // Call recursive method
+        boolean result = isPalindrome(input, 0, input.length() - 1);
 
-        for (int i = 0; i < input.length(); i++) {
-            Node newNode = new Node(input.charAt(i));
-            if (head == null) {
-                head = newNode;
-                tail = newNode;
-            } else {
-                tail.next = newNode;
-                tail = newNode;
-            }
-        }
-
-        // Step 2: Find middle using fast & slow pointer technique
-        Node slow = head;
-        Node fast = head;
-
-        while (fast != null && fast.next != null) {
-            slow = slow.next;        // moves 1 step
-            fast = fast.next.next;   // moves 2 steps
-        }
-        // slow is now at the middle
-
-        // Step 3: Reverse the second half in-place
-        Node prev = null;
-        Node curr = slow;
-
-        while (curr != null) {
-            Node nextNode = curr.next;
-            curr.next = prev;
-            prev = curr;
-            curr = nextNode;
-        }
-        // prev is now the head of reversed second half
-
-        // Step 4: Compare both halves
-        Node left = head;
-        Node right = prev;
-        boolean isPalindrome = true;
-
-        while (right != null) {
-            if (left.data != right.data) {
-                isPalindrome = false;
-                break;
-            }
-            left = left.next;
-            right = right.next;
-        }
-
-        // Step 5: Display result
+        // Display result
         System.out.println("Input        : " + input);
-        System.out.println("Is Palindrome: " + isPalindrome);
+        System.out.println("Is Palindrome: " + result);
 
         scanner.close();
     }
