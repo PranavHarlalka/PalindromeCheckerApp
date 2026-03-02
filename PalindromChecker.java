@@ -22,7 +22,7 @@
  * @version 1.0
  */
 
-public class PalindromeChecker {
+public class PalindromChecker {
 
     /**
      * Application entry point.
