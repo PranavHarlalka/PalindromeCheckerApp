@@ -3,17 +3,24 @@
  * MAIN CLASS - PalindromChecker
  * ==========================================================
  *
- * Use Case 3: Palindrome Check Using String Reverse
+ * Use Case 4: Character Array Based Palindrome Check
  *
  * Description:
- * This class checks whether a string is a palindrome by
- * reversing it using a for loop and comparing it with
- * the original using the equals() method.
+ * This class converts a string into a character array
+ * and uses the two-pointer technique to check if it
+ * is a palindrome by comparing start and end characters.
  *
  * Flow:
- * 1. Reverse string using loop
- * 2. Compare original and reversed
- * 3. Display result
+ * 1. Convert string to char[]
+ * 2. Use two-pointer approach
+ * 3. Compare start & end characters
+ * 4. Display result
+ *
+ * Key Concepts:
+ * - Character Array (char[]) for index-based access
+ * - Array Indexing starting from 0
+ * - Two-Pointer Technique (start & end pointers)
+ * - Time Complexity Awareness (no extra objects created)
  *
  * @author Pranav Harlalka
  * @version 1.0
@@ -35,18 +42,27 @@ public class PalindromChecker {
         System.out.print("Enter a string: ");
         String input = scanner.nextLine();
 
-        // Reverse the string using a for loop
-        String reversed = "";
-        for (int i = input.length() - 1; i >= 0; i--) {
-            reversed += input.charAt(i);
+        // Step 1: Convert string to character array
+        char[] chars = input.toCharArray();
+
+        // Step 2: Two-pointer approach
+        int start = 0;
+        int end = chars.length - 1;
+
+        boolean isPalindrome = true;
+
+        // Step 3: Compare start & end characters
+        while (start < end) {
+            if (chars[start] != chars[end]) {
+                isPalindrome = false;
+                break;
+            }
+            start++;
+            end--;
         }
 
-        // Compare original and reversed using equals()
-        boolean isPalindrome = input.equals(reversed);
-
-        // Display result
-        System.out.println("Original : " + input);
-        System.out.println("Reversed : " + reversed);
+        // Step 4: Display result
+        System.out.println("Input    : " + input);
         System.out.println("Is Palindrome: " + isPalindrome);
 
         scanner.close();
