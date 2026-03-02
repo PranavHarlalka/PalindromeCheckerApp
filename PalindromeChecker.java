@@ -3,35 +3,31 @@
  * MAIN CLASS - PalindromChecker
  * ==========================================================
  *
- * Use Case 6: Queue + Stack Based Palindrome Check
+ * Use Case 7: Deque-Based Optimized Palindrome Checker
  *
  * Description:
- * This class uses both a Queue (FIFO) and a Stack (LIFO)
- * to validate whether a string is a palindrome.
- * Characters are enqueued and pushed simultaneously,
- * then dequeued and popped for comparison.
+ * This class uses a Deque (Double Ended Queue) to check
+ * whether a string is a palindrome by comparing characters
+ * from both the front and rear simultaneously.
  *
  * Flow:
- * 1. Enqueue all characters into Queue
- * 2. Push all characters into Stack
- * 3. Compare dequeue (FIFO) vs pop (LIFO)
+ * 1. Insert all characters into the Deque
+ * 2. Remove first & last characters simultaneously
+ * 3. Compare until Deque is empty
  * 4. Display result
  *
  * Key Concepts:
- * - Queue (FIFO - First In First Out) using LinkedList
- * - Stack (LIFO - Last In First Out)
- * - Enqueue & Dequeue operations
- * - Stack vs Queue behavioral difference
- * - Logical comparison of both outputs
+ * - Deque (Double Ended Queue) - insert/delete from both ends
+ * - Front and Rear Access for direct comparison
+ * - Optimized - no separate reversal data structure needed
  *
  * @author Pranav Harlalka
  * @version 1.0
  */
 
-import java.util.LinkedList;
-import java.util.Queue;
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.Scanner;
-import java.util.Stack;
 
 public class PalindromChecker {
 
@@ -47,26 +43,25 @@ public class PalindromChecker {
         System.out.print("Enter a string: ");
         String input = scanner.nextLine();
 
-        // Step 1: Enqueue and Push all characters
-        Queue<Character> queue = new LinkedList<>();
-        Stack<Character> stack = new Stack<>();
-
+        // Step 1: Insert all characters into the Deque
+        Deque<Character> deque = new ArrayDeque<>();
         for (int i = 0; i < input.length(); i++) {
-            queue.add(input.charAt(i));   // Enqueue (FIFO)
-            stack.push(input.charAt(i));  // Push (LIFO)
+            deque.addLast(input.charAt(i));
         }
 
-        // Step 2: Compare dequeue (front) vs pop (top)
+        // Step 2 & 3: Remove first & last, compare until empty
         boolean isPalindrome = true;
 
-        while (!queue.isEmpty()) {
-            if (queue.poll() != stack.pop()) {  // dequeue vs pop
+        while (deque.size() > 1) {
+            char front = deque.removeFirst();  // Remove from front
+            char rear = deque.removeLast();    // Remove from rear
+            if (front != rear) {
                 isPalindrome = false;
                 break;
             }
         }
 
-        // Step 3: Display result
+        // Step 4: Display result
         System.out.println("Input        : " + input);
         System.out.println("Is Palindrome: " + isPalindrome);
 
