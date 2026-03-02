@@ -3,12 +3,17 @@
  * MAIN CLASS - PalindromChecker
  * ==========================================================
  *
- * Use Case 2: Print a Hardcoded Palindrome Result
+ * Use Case 3: Palindrome Check Using String Reverse
  *
  * Description:
- * This class takes a string input from the user and
- * checks whether it is a palindrome using a loop
- * that runs till half the string length.
+ * This class checks whether a string is a palindrome by
+ * reversing it using a for loop and comparing it with
+ * the original using the equals() method.
+ *
+ * Flow:
+ * 1. Reverse string using loop
+ * 2. Compare original and reversed
+ * 3. Display result
  *
  * @author Pranav Harlalka
  * @version 1.0
@@ -30,20 +35,19 @@ public class PalindromChecker {
         System.out.print("Enter a string: ");
         String input = scanner.nextLine();
 
-        // Assume it is a palindrome
-        boolean isPalindrome = true;
-
-        // Loop only till half the string length
-        for (int i = 0; i < input.length() / 2; i++) {
-            // Compare character from start with character from end
-            if (input.charAt(i) != input.charAt(input.length() - 1 - i)) {
-                isPalindrome = false;
-                break;
-            }
+        // Reverse the string using a for loop
+        String reversed = "";
+        for (int i = input.length() - 1; i >= 0; i--) {
+            reversed += input.charAt(i);
         }
 
-        // Print true or false
-        System.out.println(isPalindrome);
+        // Compare original and reversed using equals()
+        boolean isPalindrome = input.equals(reversed);
+
+        // Display result
+        System.out.println("Original : " + input);
+        System.out.println("Reversed : " + reversed);
+        System.out.println("Is Palindrome: " + isPalindrome);
 
         scanner.close();
     }
