@@ -3,24 +3,21 @@
  * MAIN CLASS - PalindromChecker
  * ==========================================================
  *
- * Use Case 12: Strategy Pattern for Palindrome Algorithms
+ * Use Case 13: Performance Comparison
  *
  * Description:
- * This class demonstrates the Strategy Design Pattern by
- * defining a PalindromeStrategy interface and providing
- * multiple algorithm implementations (Stack, Deque).
- * The strategy is injected at runtime dynamically.
+ * This class runs multiple palindrome algorithms on the
+ * same input and measures execution time of each using
+ * System.nanoTime() to compare their performance.
  *
  * Flow:
- * 1. Define PalindromeStrategy interface
- * 2. Implement StackStrategy and DequeStrategy
- * 3. Inject strategy at runtime based on user choice
- * 4. Display result
+ * 1. Run multiple algorithms on same input
+ * 2. Capture execution time using System.nanoTime()
+ * 3. Display results with timing
  *
- * Key Concepts (OOP + Design Patterns):
- * - Interface: defines the contract for all strategies
- * - Polymorphism: different strategies, same method call
- * - Strategy Pattern: algorithm selected at runtime
+ * Key Concepts:
+ * - System.nanoTime() for precise timing
+ * - Algorithm comparison across approaches
  *
  * @author Pranav Harlalka
  * @version 1.0
@@ -28,85 +25,74 @@
 
 import java.util.ArrayDeque;
 import java.util.Deque;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.Scanner;
 import java.util.Stack;
 
-// -------------------------------------------------------
-// Strategy Interface - Contract for all strategies
-// -------------------------------------------------------
-interface PalindromeStrategy {
-    boolean check(String input);
-}
+public class PalindromChecker {
 
-// -------------------------------------------------------
-// Strategy 1: Stack-Based Implementation (LIFO)
-// -------------------------------------------------------
-class StackStrategy implements PalindromeStrategy {
+    // -------------------------------------------------------
+    // Algorithm 1: Two-Pointer (char array)
+    // -------------------------------------------------------
+    static boolean twoPointer(String input) {
+        char[] chars = input.toCharArray();
+        int start = 0, end = chars.length - 1;
+        while (start < end) {
+            if (chars[start] != chars[end]) return false;
+            start++;
+            end--;
+        }
+        return true;
+    }
 
-    @Override
-    public boolean check(String input) {
+    // -------------------------------------------------------
+    // Algorithm 2: Stack-Based
+    // -------------------------------------------------------
+    static boolean stackBased(String input) {
         Stack<Character> stack = new Stack<>();
+        for (int i = 0; i < input.length(); i++)
+            stack.push(input.charAt(i));
+        for (int i = 0; i < input.length(); i++)
+            if (input.charAt(i) != stack.pop()) return false;
+        return true;
+    }
 
-        // Push all characters onto stack
+    // -------------------------------------------------------
+    // Algorithm 3: Queue + Stack
+    // -------------------------------------------------------
+    static boolean queueStack(String input) {
+        Queue<Character> queue = new LinkedList<>();
+        Stack<Character> stack = new Stack<>();
         for (int i = 0; i < input.length(); i++) {
+            queue.add(input.charAt(i));
             stack.push(input.charAt(i));
         }
-
-        // Compare pop with original string
-        for (int i = 0; i < input.length(); i++) {
-            if (input.charAt(i) != stack.pop()) {
-                return false;
-            }
-        }
+        while (!queue.isEmpty())
+            if (queue.poll() != stack.pop()) return false;
         return true;
     }
-}
 
-// -------------------------------------------------------
-// Strategy 2: Deque-Based Implementation
-// -------------------------------------------------------
-class DequeStrategy implements PalindromeStrategy {
-
-    @Override
-    public boolean check(String input) {
+    // -------------------------------------------------------
+    // Algorithm 4: Deque-Based
+    // -------------------------------------------------------
+    static boolean dequeBased(String input) {
         Deque<Character> deque = new ArrayDeque<>();
-
-        // Insert all characters into deque
-        for (int i = 0; i < input.length(); i++) {
+        for (int i = 0; i < input.length(); i++)
             deque.addLast(input.charAt(i));
-        }
-
-        // Compare front and rear until empty
-        while (deque.size() > 1) {
-            if (deque.removeFirst() != deque.removeLast()) {
-                return false;
-            }
-        }
+        while (deque.size() > 1)
+            if (deque.removeFirst() != deque.removeLast()) return false;
         return true;
     }
-}
 
-// -------------------------------------------------------
-// Context Class - Holds and executes the strategy
-// -------------------------------------------------------
-class PalindromeContext {
-
-    private PalindromeStrategy strategy;
-
-    // Inject strategy at runtime
-    public PalindromeContext(PalindromeStrategy strategy) {
-        this.strategy = strategy;
+    // -------------------------------------------------------
+    // Algorithm 5: Recursive
+    // -------------------------------------------------------
+    static boolean recursive(String input, int start, int end) {
+        if (start >= end) return true;
+        if (input.charAt(start) != input.charAt(end)) return false;
+        return recursive(input, start + 1, end - 1);
     }
-
-    public boolean execute(String input) {
-        return strategy.check(input);
-    }
-}
-
-// -------------------------------------------------------
-// Main Class - Entry point
-// -------------------------------------------------------
-public class PalindromChecker {
 
     /**
      * Application entry point.
@@ -116,35 +102,52 @@ public class PalindromChecker {
     public static void main(String[] args) {
 
         Scanner scanner = new Scanner(System.in);
-
-        // Take input string
         System.out.print("Enter a string: ");
         String input = scanner.nextLine();
 
-        // Choose strategy at runtime
-        System.out.println("Choose strategy:");
-        System.out.println("1. Stack Strategy");
-        System.out.println("2. Deque Strategy");
-        System.out.print("Enter choice (1 or 2): ");
-        int choice = scanner.nextInt();
+        System.out.println("\n--- Performance Comparison ---");
+        System.out.printf("%-25s %-15s %s%n", "Algorithm", "Result", "Time (ns)");
+        System.out.println("------------------------------------------------------");
 
-        // Inject strategy dynamically (Polymorphism)
-        PalindromeStrategy strategy;
-        if (choice == 1) {
-            strategy = new StackStrategy();
-            System.out.println("Using: Stack Strategy");
-        } else {
-            strategy = new DequeStrategy();
-            System.out.println("Using: Deque Strategy");
-        }
+        long start, end, duration;
+        boolean result;
 
-        // Create context with chosen strategy
-        PalindromeContext context = new PalindromeContext(strategy);
+        // Algorithm 1: Two-Pointer
+        start = System.nanoTime();
+        result = twoPointer(input);
+        end = System.nanoTime();
+        duration = end - start;
+        System.out.printf("%-25s %-15s %d ns%n", "Two-Pointer", result, duration);
 
-        // Execute and display result
-        boolean result = context.execute(input);
-        System.out.println("Input        : " + input);
-        System.out.println("Is Palindrome: " + result);
+        // Algorithm 2: Stack-Based
+        start = System.nanoTime();
+        result = stackBased(input);
+        end = System.nanoTime();
+        duration = end - start;
+        System.out.printf("%-25s %-15s %d ns%n", "Stack-Based", result, duration);
+
+        // Algorithm 3: Queue + Stack
+        start = System.nanoTime();
+        result = queueStack(input);
+        end = System.nanoTime();
+        duration = end - start;
+        System.out.printf("%-25s %-15s %d ns%n", "Queue + Stack", result, duration);
+
+        // Algorithm 4: Deque-Based
+        start = System.nanoTime();
+        result = dequeBased(input);
+        end = System.nanoTime();
+        duration = end - start;
+        System.out.printf("%-25s %-15s %d ns%n", "Deque-Based", result, duration);
+
+        // Algorithm 5: Recursive
+        start = System.nanoTime();
+        result = recursive(input, 0, input.length() - 1);
+        end = System.nanoTime();
+        duration = end - start;
+        System.out.printf("%-25s %-15s %d ns%n", "Recursive", result, duration);
+
+        System.out.println("------------------------------------------------------");
 
         scanner.close();
     }
